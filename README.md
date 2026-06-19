@@ -1,3 +1,4 @@
+
 # CanchaTulcán
 
 Sistema web de gestión de reservas de canchas deportivas públicas del GAD de Tulcán.
@@ -125,3 +126,6 @@ docker-compose exec web flask seed-db
 | 🔵 Azul | Ocupación institucional |
 | 🟣 Morado | Campeonato |
 | ⚪ Gris | Mantenimiento |
+=======
+# canchastulcan
+Repositorio para el proyecto de reserva de canchas de tulcan
