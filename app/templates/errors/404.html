@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Página no encontrada{% endblock %}
+{% block content %}
+<div class="text-center">
+    <h1 class="display-3 text-secondary">404</h1>
+    <p class="lead">La página que buscas no existe.</p>
+    <a href="{{ url_for('dashboard.index') }}" class="btn btn-success">Volver al inicio</a>
+</div>
+{% endblock %}

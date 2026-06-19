@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}{{ 'Editar cancha' if cancha else 'Nueva cancha' }}{% endblock %}
+{% block content %}
+<h3 class="mb-4">{{ 'Editar cancha' if cancha else 'Nueva cancha' }}</h3>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" class="form-control" value="{{ cancha.nombre if cancha else '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tipo</label>
+                    <input type="text" name="tipo" class="form-control" placeholder="Fútbol, Vóley, Básquet..." value="{{ cancha.tipo if cancha else '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Zona</label>
+                    <input type="text" name="zona" class="form-control" value="{{ cancha.zona if cancha else '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Acceso</label>
+                    <input type="text" name="acceso" class="form-control" value="{{ cancha.acceso if cancha else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Precio por hora ($)</label>
+                    <input type="number" step="0.01" min="0" name="precio" class="form-control" value="{{ cancha.precio if cancha else '0.00' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Especialidad</label>
+                    <input type="text" name="especialidad" class="form-control" value="{{ cancha.especialidad if cancha else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Estado</label>
+                    <select name="estado" class="form-select">
+                        {% for estado in estados %}
+                        <option value="{{ estado }}" {% if cancha and cancha.estado == estado %}selected{% endif %}>{{ estado }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a href="{{ url_for('canchas.listar') }}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

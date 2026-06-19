@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="bi bi-people"></i> Gestión de usuarios</h3>
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Cédula</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.id }}</td>
+                <td>{{ usuario.nombre }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.cedula }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('usuarios.cambiar_rol', usuario_id=usuario.id) }}" class="d-flex gap-1">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <select name="rol" class="form-select form-select-sm" onchange="this.form.submit()">
+                            {% for rol in roles %}
+                            <option value="{{ rol }}" {% if usuario.rol == rol %}selected{% endif %}>{{ rol }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </td>
+                <td>
+                    <span class="badge bg-{{ 'danger' if usuario.bloqueado else 'success' }}">
+                        {{ 'Bloqueado' if usuario.bloqueado else 'Activo' }}
+                    </span>
+                </td>
+                <td class="d-flex gap-2">
+                    <form method="POST" action="{{ url_for('usuarios.bloqueo', usuario_id=usuario.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-warning">
+                            {{ 'Desbloquear' if usuario.bloqueado else 'Bloquear' }}
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ url_for('usuarios.eliminar', usuario_id=usuario.id) }}" onsubmit="return confirm('¿Eliminar este usuario?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

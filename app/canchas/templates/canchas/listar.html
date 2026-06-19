@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}Canchas{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3><i class="bi bi-grid-3x3-gap"></i> Canchas deportivas</h3>
+    {% if current_user.rol in ['admin', 'dirigente'] %}
+    <a href="{{ url_for('canchas.nueva') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nueva cancha
+    </a>
+    {% endif %}
+</div>
+
+<div class="row g-3">
+    {% for cancha in canchas %}
+    <div class="col-md-4">
+        <div class="card card-cancha shadow-sm h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title">{{ cancha.nombre }}</h5>
+                    <span class="badge bg-{{ 'success' if cancha.estado == 'disponible' else ('secondary' if cancha.estado == 'mantenimiento' else 'danger') }}">
+                        {{ cancha.estado }}
+                    </span>
+                </div>
+                <p class="card-text mb-1"><strong>Tipo:</strong> {{ cancha.tipo }}</p>
+                <p class="card-text mb-1"><strong>Zona:</strong> {{ cancha.zona }}</p>
+                <p class="card-text mb-1"><strong>Precio/hora:</strong> ${{ "%.2f"|format(cancha.precio) }}</p>
+                <div class="d-flex gap-2 mt-3">
+                    <a href="{{ url_for('reservas.calendario', cancha_id=cancha.id) }}" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-calendar3"></i> Ver disponibilidad
+                    </a>
+                    {% if current_user.rol in ['admin', 'dirigente'] %}
+                    <a href="{{ url_for('canchas.editar', cancha_id=cancha.id) }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    {% endif %}
+                    {% if current_user.rol == 'admin' %}
+                    <form method="POST" action="{{ url_for('canchas.eliminar', cancha_id=cancha.id) }}" onsubmit="return confirm('¿Eliminar esta cancha?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p class="text-muted">No hay canchas registradas.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block title %}Calendario de disponibilidad{% endblock %}
+{% block content %}
+<h3 class="mb-3"><i class="bi bi-calendar3"></i> Calendario semanal de disponibilidad</h3>
+
+{% if canchas %}
+<form method="GET" class="row g-2 align-items-end mb-3">
+    <div class="col-md-4">
+        <label class="form-label">Cancha</label>
+        <select name="cancha_id" class="form-select" onchange="this.form.submit()">
+            {% for c in canchas %}
+            <option value="{{ c.id }}" {% if cancha and cancha.id == c.id %}selected{% endif %}>{{ c.nombre }} ({{ c.tipo }})</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="semana" value="{{ semana_offset }}">
+    </div>
+</form>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('reservas.calendario', cancha_id=cancha.id, semana=semana_offset - 1) }}">
+        <i class="bi bi-arrow-left"></i> Semana anterior
+    </a>
+    <div class="d-flex gap-2 small">
+        <span class="badge bg-success">Libre</span>
+        <span class="badge bg-danger">Ocupado</span>
+        <span class="badge bg-warning text-dark">Pendiente de pago</span>
+        <span class="badge bg-orange">Validando comprobante</span>
+        <span class="badge bg-primary">Institucional</span>
+        <span class="badge bg-purple">Campeonato</span>
+        <span class="badge bg-secondary">Mantenimiento</span>
+    </div>
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('reservas.calendario', cancha_id=cancha.id, semana=semana_offset + 1) }}">
+        Semana siguiente <i class="bi bi-arrow-right"></i>
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered text-center align-middle">
+        <thead>
+            <tr class="table-light">
+                <th>Hora</th>
+                {% for dia in calendario %}
+                <th>{{ dia.fecha.strftime('%a %d/%m') }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% if calendario %}
+            {% for i in range(calendario[0].celdas|length) %}
+            <tr>
+                <td class="fw-semibold">{{ calendario[0].celdas[i].hora.strftime('%H:%M') }}</td>
+                {% for dia in calendario %}
+                {% set celda = dia.celdas[i] %}
+                <td class="celda-horario bg-{{ celda.color }} {{ 'text-dark' if celda.color == 'warning' else 'text-white' }}">
+                    {% if celda.reservable %}
+                    <form method="POST" action="{{ url_for('reservas.reservar') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="cancha_id" value="{{ cancha.id }}">
+                        <input type="hidden" name="fecha" value="{{ dia.fecha.strftime('%Y-%m-%d') }}">
+                        <input type="hidden" name="hora" value="{{ celda.hora.strftime('%H:%M') }}">
+                        <input type="hidden" name="semana_offset" value="{{ semana_offset }}">
+                        <button type="submit" class="btn btn-sm btn-light w-100" onclick="return confirm('¿Reservar este horario?');">
+                            Reservar
+                        </button>
+                    </form>
+                    {% else %}
+                    {{ celda.estado }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-muted">No hay canchas registradas todavía.</p>
+{% endif %}
+{% endblock %}

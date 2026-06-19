@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="bi bi-speedometer2"></i> Bienvenido, {{ current_user.nombre }}</h3>
+
+<div class="row g-3">
+    {% if current_user.rol == 'admin' %}
+    <div class="col-md-3">
+        <div class="card text-bg-success shadow-sm">
+            <div class="card-body">
+                <h6>Canchas</h6>
+                <h2>{{ total_canchas }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-primary shadow-sm">
+            <div class="card-body">
+                <h6>Usuarios</h6>
+                <h2>{{ total_usuarios }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-warning shadow-sm">
+            <div class="card-body">
+                <h6>Pendientes de pago</h6>
+                <h2>{{ reservas_pendientes_pago }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-orange bg-orange text-white shadow-sm">
+            <div class="card-body">
+                <h6>Validando comprobante</h6>
+                <h2>{{ reservas_validando }}</h2>
+            </div>
+        </div>
+    </div>
+    {% elif current_user.rol == 'dirigente' %}
+    <div class="col-md-4">
+        <div class="card text-bg-success shadow-sm">
+            <div class="card-body">
+                <h6>Canchas</h6>
+                <h2>{{ total_canchas }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-primary shadow-sm">
+            <div class="card-body">
+                <h6>Reservas confirmadas hoy</h6>
+                <h2>{{ reservas_confirmadas_hoy }}</h2>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-md-4">
+        <div class="card text-bg-success shadow-sm">
+            <div class="card-body">
+                <h6>Mis reservas activas</h6>
+                <h2>{{ mis_reservas_activas }}</h2>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="mt-4 d-flex gap-2">
+    <a href="{{ url_for('reservas.calendario') }}" class="btn btn-success">
+        <i class="bi bi-calendar3"></i> Ver disponibilidad
+    </a>
+    <a href="{{ url_for('reservas.historial') }}" class="btn btn-outline-success">
+        <i class="bi bi-clock-history"></i> Mis reservas
+    </a>
+</div>
+{% endblock %}

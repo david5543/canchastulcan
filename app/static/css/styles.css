@@ -1,0 +1,43 @@
+body {
+    background-color: #f4f6f8;
+}
+
+.sidebar {
+    min-width: 240px;
+    min-height: calc(100vh - 56px);
+}
+
+.contenido-principal {
+    min-height: calc(100vh - 56px);
+}
+
+.bg-orange {
+    background-color: #fd7e14 !important;
+}
+
+.bg-purple {
+    background-color: #6f42c1 !important;
+}
+
+.text-orange {
+    color: #fd7e14 !important;
+}
+
+.text-purple {
+    color: #6f42c1 !important;
+}
+
+.celda-horario {
+    cursor: pointer;
+    min-height: 60px;
+    font-size: 0.8rem;
+}
+
+.celda-horario:hover {
+    opacity: 0.85;
+}
+
+.card-cancha img {
+    height: 160px;
+    object-fit: cover;
+}

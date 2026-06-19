@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% include "navbar.html" %}
+<div class="d-flex">
+    {% include "sidebar.html" %}
+    <main class="flex-grow-1 p-4 contenido-principal">
+        {% include "_mensajes.html" %}
+        {% block content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}

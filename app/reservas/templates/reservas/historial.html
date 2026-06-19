@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Historial de reservas{% endblock %}
+{% block content %}
+<h3 class="mb-3"><i class="bi bi-clock-history"></i> Historial de reservas</h3>
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>#</th>
+                {% if current_user.rol != 'deportista' %}<th>Usuario</th>{% endif %}
+                <th>Cancha</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+            <tr>
+                <td>{{ reserva.id }}</td>
+                {% if current_user.rol != 'deportista' %}<td>{{ reserva.usuario.nombre }}</td>{% endif %}
+                <td>{{ reserva.cancha.nombre }}</td>
+                <td>{{ reserva.fecha.strftime('%d/%m/%Y') }}</td>
+                <td>{{ reserva.hora.strftime('%H:%M') }}</td>
+                <td>${{ "%.2f"|format(reserva.monto) }}</td>
+                <td>
+                    <span class="badge bg-{{ 'success' if reserva.estado == 'confirmada' else ('danger' if reserva.estado == 'cancelada' else ('warning text-dark' if reserva.estado == 'pendiente_pago' else 'orange')) }}">
+                        {{ reserva.estado }}
+                    </span>
+                </td>
+                <td>
+                    {% if reserva.estado == 'pendiente_pago' %}
+                    <a href="{{ url_for('pagos.orden', reserva_id=reserva.id) }}" class="btn btn-sm btn-outline-success">Pagar</a>
+                    {% endif %}
+                    {% if reserva.estado in ['pendiente_pago', 'validando'] %}
+                    <form method="POST" action="{{ url_for('reservas.cancelar', reserva_id=reserva.id) }}" class="d-inline" onsubmit="return confirm('¿Cancelar esta reserva?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancelar</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="text-center text-muted">No hay reservas registradas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

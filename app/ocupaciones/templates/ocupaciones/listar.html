@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Ocupaciones especiales{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3><i class="bi bi-calendar-event"></i> Ocupaciones especiales</h3>
+    <a href="{{ url_for('ocupaciones.nueva') }}" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nueva ocupación
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Cancha</th>
+                <th>Fecha</th>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ocupacion in ocupaciones %}
+            <tr>
+                <td>{{ ocupacion.id }}</td>
+                <td>{{ ocupacion.cancha.nombre }}</td>
+                <td>{{ ocupacion.fecha.strftime('%d/%m/%Y') }}</td>
+                <td>{{ ocupacion.hora_inicio.strftime('%H:%M') }}</td>
+                <td>{{ ocupacion.hora_fin.strftime('%H:%M') }}</td>
+                <td>
+                    <span class="badge bg-{{ 'primary' if ocupacion.tipo == 'institucional' else ('purple' if ocupacion.tipo == 'campeonato' else 'secondary') }}">
+                        {{ ocupacion.tipo }}
+                    </span>
+                </td>
+                <td>{{ ocupacion.descripcion or '-' }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('ocupaciones.eliminar', ocupacion_id=ocupacion.id) }}" onsubmit="return confirm('¿Eliminar esta ocupación?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="text-center text-muted">No hay ocupaciones registradas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

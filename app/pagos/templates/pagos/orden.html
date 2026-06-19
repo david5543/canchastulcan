@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Orden de pago{% endblock %}
+{% block content %}
+<h3 class="mb-4"><i class="bi bi-receipt"></i> Orden de pago</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Código: {{ orden.codigo }}</h5>
+                <p class="mb-1"><strong>Cancha:</strong> {{ reserva.cancha.nombre }}</p>
+                <p class="mb-1"><strong>Fecha:</strong> {{ reserva.fecha.strftime('%d/%m/%Y') }}</p>
+                <p class="mb-1"><strong>Hora:</strong> {{ reserva.hora.strftime('%H:%M') }}</p>
+                <p class="mb-1"><strong>Monto a pagar:</strong> ${{ "%.2f"|format(orden.monto) }}</p>
+                <p class="mb-0">
+                    <strong>Estado:</strong>
+                    <span class="badge bg-{{ 'success' if orden.estado_pago == 'aprobado' else ('danger' if orden.estado_pago == 'rechazado' else 'warning text-dark') }}">
+                        {{ orden.estado_pago }}
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        {% if reserva.estado == 'pendiente_pago' %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Subir comprobante de pago</h5>
+                <form method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="mb-3">
+                        <label class="form-label">Archivo (PNG, JPG o PDF)</label>
+                        <input type="file" name="comprobante" id="comprobante" class="form-control" accept=".png,.jpg,.jpeg,.pdf" required>
+                        <small id="nombre-archivo" class="text-muted"></small>
+                    </div>
+                    <button type="submit" class="btn btn-success">Enviar comprobante</button>
+                </form>
+            </div>
+        </div>
+        {% elif reserva.estado == 'validando' %}
+        <div class="alert alert-orange bg-orange text-white">
+            Tu comprobante está siendo validado por un administrador.
+        </div>
+        {% elif reserva.estado == 'confirmada' %}
+        <div class="alert alert-success">Tu reserva ya fue confirmada.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

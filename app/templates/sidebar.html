@@ -1,0 +1,48 @@
+<nav class="sidebar bg-dark text-white p-3" id="sidebar">
+    <ul class="nav nav-pills flex-column gap-1">
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('dashboard.index') }}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('reservas.calendario') }}">
+                <i class="bi bi-calendar3"></i> Calendario
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('reservas.historial') }}">
+                <i class="bi bi-clock-history"></i> Mis reservas
+            </a>
+        </li>
+        {% if current_user.rol in ['admin', 'dirigente'] %}
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('canchas.listar') }}">
+                <i class="bi bi-grid-3x3-gap"></i> Canchas
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('ocupaciones.listar') }}">
+                <i class="bi bi-calendar-event"></i> Ocupaciones especiales
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('reportes.index') }}">
+                <i class="bi bi-file-earmark-bar-graph"></i> Reportes
+            </a>
+        </li>
+        {% endif %}
+        {% if current_user.rol == 'admin' %}
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('usuarios.listar') }}">
+                <i class="bi bi-people"></i> Usuarios
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white" href="{{ url_for('pagos.listar_pendientes') }}">
+                <i class="bi bi-cash-coin"></i> Validar pagos
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>

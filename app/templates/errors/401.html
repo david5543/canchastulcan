@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}No autorizado{% endblock %}
+{% block content %}
+<div class="text-center">
+    <h1 class="display-3 text-warning">401</h1>
+    <p class="lead">Debes iniciar sesión para acceder a esta página.</p>
+    <a href="{{ url_for('auth.login') }}" class="btn btn-success">Iniciar sesión</a>
+</div>
+{% endblock %}
